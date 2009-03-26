@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Cache-Control" content="no-cache"/>
+
+  <title>test cross domain http requests, using google gears worker pools with allowCrossOrigin</title>
+  <script type="text/javascript" src="/protoculous-effects-shrinkvars.js"></script>
+</head>
+<body>
+  <p>
+    In order for this test to work you must make sure that /javascripts/ping.js is served with the HTTP Header HTTP_CONTENT_TYPE application/x-gears-worker
+  </p>
+  <a id="ping" href="#ping">Ping test</a>
+  <div id="display">
+  </div>
+  <script type="text/javascript">
+    document.observe("dom:loaded", function() {
+      // create  worker pool to distribute each request too
+      var workerPool           = google.gears.factory.create('beta.workerpool');
+//      workerPool.allowCrossOrigin();
+      console.log("created worker pool");
+      workerPool.onmessage = function(a, b, message ) {
+        $("display").innerHTML = message.body.res;
+      };
+      var workerId             = workerPool.createWorkerFromUrl("http://127.0.0.1:2001/ping.gjs");
+      console.log("creating worker from url");
+      var ping = $("ping");
+      console.log(ping.id);
+      ping.observe("click", function(e) {
+        e.stop();
+        workerPool.sendMessage({type:"ping", id: '5'}, workerId);
+      });
+    });
+  </script>
+</body>
+</html>
