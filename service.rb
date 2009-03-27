@@ -4,10 +4,10 @@ require 'rubygems'
 require 'sinatra'
 
 get '/test' do
-  "Hello cross domain world!"
+  "Hello world!"
 end
 
-get '/ping.gjs' do
+get '/xajax-worker.js' do
   content_type 'application/x-gears-worker'
-  File.read('ping.gjs')
+  File.read('xajax-worker.js')
 end

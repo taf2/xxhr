@@ -4,9 +4,9 @@ require 'rubygems'
 require 'sinatra'
 
 get '/' do
-  File.read("co.html")
+  File.read("index.html")
 end
 
-get '/protoculous-effects-shrinkvars.js' do
-  File.read("protoculous-effects-shrinkvars.js")
+get '/xajax-client.js' do
+  File.read("xajax-client.js")
 end
