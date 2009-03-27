@@ -9,7 +9,8 @@
 </head>
 <body>
   <p>
-    In order for this test to work you must make sure that /javascripts/ping.js is served with the HTTP Header HTTP_CONTENT_TYPE application/x-gears-worker
+    In order for this test to work you must make sure that /ping.gjs
+    is served with the HTTP Header HTTP_CONTENT_TYPE application/x-gears-worker
   </p>
   <a id="ping" href="#ping">Ping test</a>
   <div id="display">
@@ -17,13 +18,12 @@
   <script type="text/javascript">
     document.observe("dom:loaded", function() {
       // create  worker pool to distribute each request too
-      var workerPool           = google.gears.factory.create('beta.workerpool');
-//      workerPool.allowCrossOrigin();
+      var workerPool = google.gears.factory.create('beta.workerpool');
       console.log("created worker pool");
       workerPool.onmessage = function(a, b, message ) {
         $("display").innerHTML = message.body.res;
       };
-      var workerId             = workerPool.createWorkerFromUrl("http://127.0.0.1:2001/ping.gjs");
+      var workerId = workerPool.createWorkerFromUrl("http://127.0.0.1:2001/ping.gjs");
       console.log("creating worker from url");
       var ping = $("ping");
       console.log(ping.id);

@@ -1,20 +1,21 @@
-google.gears.workerPool.allowCrossOrigin();
+var wp = google.gears.workerPool;
+wp.allowCrossOrigin();
 
-google.gears.workerPool.onmessage = function(a, b, message) {
-  var type = message.body.type;
-  var id = message.body.id;
-  switch( type ) {
-  case "ping":
-  default:
-    break;
+var clientDomain = "http://127.0.0.1:2000";
+
+wp.onmessage = function(a, b, message) {
+  var origin = message.origin;
+  if( origin != clientDomain ) {
+    wp.sendMessage({res:"Invalid client origin:" + origin}, message.sender);
+    return;
   }
-  google.gears.workerPool.sendMessage({id: message.body.id, res:"starting request"}, message.sender);
+  wp.sendMessage({res:"starting request"}, message.sender);
   var request = google.gears.factory.create('beta.httprequest');
   request.open("GET", "http://127.0.0.1:2001/test");
   request.onreadystatechange = function() {
     if( request.readyState == 4 ) {
-      google.gears.workerPool.sendMessage({id: message.body.id, res:request.responseText}, message.sender);
+      wp.sendMessage({res:request.responseText}, message.sender);
     }
   }
   request.send();
-}
+};
