@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Cache-Control" content="no-cache"/>
+  <title>test cross domain http requests, using google gears worker pools with allowCrossOrigin</title>
+</head>
+<body onload="initTest()">
+  <p>
+    In order for this test to work you must make sure that /ping.gjs
+    is served with the HTTP Header HTTP_CONTENT_TYPE application/x-gears-worker
+  </p>
+  <a id="ping" href="#ping">Ping test</a>
+  <div id="display">
+  </div>
+  <script type="text/javascript">
+// google gears
+(function() { if (window.google && google.gears) { return; } var factory = null; if (typeof GearsFactory != 'undefined') { factory = new GearsFactory(); } else { try { factory = new ActiveXObject('Gears.Factory'); if (factory.getBuildInfo().indexOf('ie_mobile') != -1) { factory.privateSetGlobalObject(this); } } catch (e) { if ((typeof navigator.mimeTypes != 'undefined') && navigator.mimeTypes["application/x-googlegears"]) { factory = document.createElement("object"); factory.style.display = "none"; factory.width = 0; factory.height = 0; factory.type = "application/x-googlegears"; document.documentElement.appendChild(factory); } } } if (!factory) { return; } if (!window.google) { google = {}; } if (!google.gears) { google.gears = {factory: factory}; } })();
+  </script>
+  <script type="text/javascript" src="/xajax-client.js"></script>
+  <script type="text/javascript">
+    function ID(id) { return document.getElementById(id); }
+    function watch(el,ev,cb) {
+      if (el.addEventListener) { el.addEventListener(ev, cb, false); } else { el.attachEvent("on" + ev, cb); }
+    }
+    function initTest() {
+      watch(ID("ping"), "click", function(event) {
+        event.preventDefault();
+        anerian.xajax('/test', {
+          method:'GET',
+          success: function(res) {
+            ID("display").innerHTML = res.responseText;
+            ID("display").style.background = "#fff";
+          },
+          failure: function(res) {
+            ID("display").innerHTML = res.responseText;
+            ID("display").style.background = "#f00";
+          }
+        });
+      });
+    };
+  </script>
+</body>
+</html>
